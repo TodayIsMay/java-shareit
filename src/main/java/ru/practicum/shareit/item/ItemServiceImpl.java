@@ -24,8 +24,10 @@ public class ItemServiceImpl implements ItemService {
         }
         List<ItemDto> result = new ArrayList<>();
         for (Item item : itemRepository.getItems().values()) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase()) && item.getAvailable() |
-                    item.getDescription().toLowerCase().contains(text.toLowerCase()) && item.getAvailable()) {
+            if (item.getName().toLowerCase().contains(text.toLowerCase()) & item.getAvailable()) {
+                result.add(ItemMapper.toItemDto(item));
+            }
+            if (item.getDescription().toLowerCase().contains(text.toLowerCase()) & item.getAvailable()) {
                 result.add(ItemMapper.toItemDto(item));
             }
         }
