@@ -28,8 +28,7 @@ public class ItemServiceImpl implements ItemService {
                 if (item.getAvailable()) {
                     result.add(ItemMapper.toItemDto(item));
                 }
-            }
-            if (item.getDescription().toLowerCase().contains(text.toLowerCase())) {
+            } else if (item.getDescription().toLowerCase().contains(text.toLowerCase())) {
                 if (item.getAvailable()) {
                     result.add(ItemMapper.toItemDto(item));
                 }
