@@ -3,24 +3,13 @@ package ru.practicum.shareit.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeptions.EntityIsAlreadyExistsException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * // TODO .
- */
 @Slf4j
 @RestController
 @RequestMapping(path = "/users")
@@ -59,16 +48,16 @@ public class UserController {
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleEntityIsAlreadyExist(final EntityIsAlreadyExistsException e) {
         return new ResponseEntity<>(
-            Map.of("message", e.getMessage()),
-            HttpStatus.CONFLICT
+                Map.of("message", e.getMessage()),
+                HttpStatus.CONFLICT
         );
     }
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleIllegalArgument(final IllegalArgumentException e) {
         return new ResponseEntity<>(
-            Map.of("message", e.getMessage()),
-            HttpStatus.BAD_REQUEST
+                Map.of("message", e.getMessage()),
+                HttpStatus.BAD_REQUEST
         );
     }
 }

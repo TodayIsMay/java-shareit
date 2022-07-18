@@ -2,12 +2,11 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDate;
 
 /**
- * // TODO .
+ * // TODO имплементировать ДТО для броней.
  */
 @Data
 @AllArgsConstructor

@@ -18,14 +18,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search (String text) {
+    public List<ItemDto> search(String text) {
         if (text == null || text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
         List<ItemDto> result = new ArrayList<>();
         for (Item item : itemRepository.getItems().values()) {
             if (item.getName().toLowerCase().contains(text.toLowerCase()) & item.getAvailable() |
-                item.getDescription().toLowerCase().contains(text.toLowerCase()) & item.getAvailable()) {
+                    item.getDescription().toLowerCase().contains(text.toLowerCase()) & item.getAvailable()) {
                 result.add(ItemMapper.toItemDto(item));
             }
         }

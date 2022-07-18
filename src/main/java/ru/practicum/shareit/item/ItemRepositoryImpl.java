@@ -7,29 +7,26 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
     UserRepository userRepository;
 
-    public ItemRepositoryImpl (UserRepository userRepository) {
+    public ItemRepositoryImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     long id = 0;
     private final Map<Long, Item> items = new HashMap<>();
 
     @Override
-    public Map<Long, Item> getItems () {
+    public Map<Long, Item> getItems() {
         return items;
     }
 
     @Override
-    public ItemDto get(long userId, long itemId) throws NoSuchElementException{
+    public ItemDto get(long userId, long itemId) throws NoSuchElementException {
         ItemDto result = null;
         Item item = getItemById(itemId);
         if (item.getOwner().getId() == userId) {
@@ -54,6 +51,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         return result;
     }
+
     @Override
     public Item getItemById(long itemId) {
         return items.get(itemId);
@@ -91,7 +89,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         Boolean isAvailable = item.getAvailable() == null ? oldItem.getAvailable() : item.getAvailable();
         Item newItem = new Item(oldItem.getId(), name, description, isAvailable, oldItem.getOwner(),
-            oldItem.getRequest());
+                oldItem.getRequest());
         items.replace(itemId, newItem);
 
         return newItem;

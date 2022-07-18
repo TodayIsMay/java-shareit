@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(long id) throws NoSuchElementException{
+    public User getUserById(long id) throws NoSuchElementException {
         return userRepository.getUserById(id);
     }
 
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser (long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException {
+    public User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException {
         return userRepository.updateUser(id, user);
     }
 

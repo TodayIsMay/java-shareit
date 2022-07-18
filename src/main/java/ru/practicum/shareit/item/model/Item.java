@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.shareit.user.User;
 
-/**
- * // TODO .
- */
 @AllArgsConstructor
 @Data
 public class Item {

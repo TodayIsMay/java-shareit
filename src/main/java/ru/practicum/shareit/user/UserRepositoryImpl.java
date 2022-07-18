@@ -18,6 +18,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         return new ArrayList<>(users.values());
     }
+
     @Override
     public User getUserById(long id) throws NoSuchElementException {
         User targetUser = null;
@@ -68,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
             throw new NoSuchElementException("Пользователь не найден!");
         }
         User newUser = new User(id, user.getName() == null ? oldUser.getName() : user.getName(),
-                                user.getEmail() == null ? oldUser.getEmail() : user.getEmail());
+                user.getEmail() == null ? oldUser.getEmail() : user.getEmail());
         users.remove(oldUser.getEmail());
         users.put(newUser.getEmail(), newUser);
         return newUser;

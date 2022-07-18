@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 public interface ItemRepository {
     Map<Long, Item> getItems();
+
     ItemDto get(long userId, long itemId) throws NoSuchElementException;
 
     List<ItemDto> getAll(long userId);

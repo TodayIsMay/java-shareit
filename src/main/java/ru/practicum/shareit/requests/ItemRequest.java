@@ -6,7 +6,7 @@ import ru.practicum.shareit.user.User;
 import java.time.LocalDate;
 
 /**
- * // TODO .
+ * // TODO имплементировать сущность запроса.
  */
 @Data
 public class ItemRequest {

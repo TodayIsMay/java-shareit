@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * // TODO .
+ * // TODO имплементировать ДТО для запросов.
  */
 @Data
 @AllArgsConstructor
