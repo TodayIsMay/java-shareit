@@ -26,13 +26,8 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ItemDto get(long userId, long itemId) throws NoSuchElementException {
-        ItemDto result = null;
-        Item item = getItemById(itemId);
-        if (item.getOwner().getId() == userId) {
-            result = ItemMapper.toItemDto(item);
-        }
-        return result;
+    public ItemDto get(long itemId) throws NoSuchElementException {
+        return ItemMapper.toItemDto(getItemById(itemId));
     }
 
     @Override

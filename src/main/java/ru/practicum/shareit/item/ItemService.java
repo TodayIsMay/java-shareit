@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 public interface ItemService {
     List<ItemDto> search(String text);
 
-    ItemDto get(long userId, long itemId) throws NoSuchElementException;
+    ItemDto get(long itemId) throws NoSuchElementException;
 
     List<ItemDto> getAll(long userId) throws NoSuchElementException;
 
