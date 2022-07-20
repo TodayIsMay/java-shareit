@@ -11,8 +11,10 @@ import java.util.NoSuchElementException;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+    private static final String EMAIL_VALIDATION =
+            "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
     private final Map<String, User> users = new HashMap<>();
-    long id = 0;
+    private long id = 0;
 
     @Override
     public List<User> getAll() {
@@ -38,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (user.getEmail() == null) {
             throw new IllegalArgumentException("Email пользователя не может быть пустым!");
         }
-        if (!user.getEmail().matches("^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$")) {
+        if (!user.getEmail().toLowerCase().matches(EMAIL_VALIDATION)) {
             throw new IllegalArgumentException("Некорректный email!");
         }
         if (users.containsKey(user.getEmail())) {
@@ -55,9 +57,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException {
+    public User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException,
+            IllegalArgumentException {
         if (users.containsKey(user.getEmail())) {
             throw new EntityIsAlreadyExistsException("Пользователь с таким email уже существует!");
+        }
+        if (user.getEmail() != null && !user.getEmail().toLowerCase().matches(EMAIL_VALIDATION)) {
+            throw new IllegalArgumentException("Некорректный email!");
         }
         User oldUser = null;
         for (User cashedUser : users.values()) {
@@ -77,10 +83,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void deleteUserById(long id) {
+        User target = null;
         for (User user : users.values()) {
             if (user.getId() == id) {
-                users.remove(user.getEmail());
+                target = user;
+                break;
             }
+        }
+        if (target != null) {
+            users.remove(target.getEmail());
         }
     }
 }

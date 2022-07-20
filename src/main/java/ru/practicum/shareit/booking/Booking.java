@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.User;
 import java.time.LocalDate;
 
 /**
- * // TODO .
+ * // TODO реализовать сущность для бронирования вещей.
  */
 @Data
 public class Booking {

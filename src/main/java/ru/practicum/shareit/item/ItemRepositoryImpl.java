@@ -11,13 +11,13 @@ import java.util.*;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public ItemRepositoryImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    long id = 0;
+    private long id = 0;
     private final Map<Long, Item> items = new HashMap<>();
 
     @Override

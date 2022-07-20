@@ -12,7 +12,8 @@ public interface UserService {
 
     User addUser(User user) throws EntityIsAlreadyExistsException;
 
-    User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException;
+    User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException,
+            IllegalArgumentException;
 
     void deleteUserById(long id);
 }

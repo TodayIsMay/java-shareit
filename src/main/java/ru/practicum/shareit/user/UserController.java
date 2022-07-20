@@ -36,7 +36,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable long id, @RequestBody User user) throws EntityIsAlreadyExistsException {
+    public User updateUser(@PathVariable long id, @RequestBody User user) throws NoSuchElementException,
+            EntityIsAlreadyExistsException, IllegalArgumentException {
         return userService.updateUser(id, user);
     }
 
