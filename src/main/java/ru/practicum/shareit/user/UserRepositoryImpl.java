@@ -40,12 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (user.getEmail() == null) {
             throw new IllegalArgumentException("Email пользователя не может быть пустым!");
         }
-        if (!user.getEmail().toLowerCase().matches(EMAIL_VALIDATION)) {
-            throw new IllegalArgumentException("Некорректный email!");
-        }
-        if (users.containsKey(user.getEmail())) {
-            throw new EntityIsAlreadyExistsException("Пользователь с таким email уже существует!");
-        }
+        isValidUser(user);
         if (user.getId() == 0 || users.get(user.getEmail()).getId() != user.getId()) {
             id++;
             user.setId(id);
@@ -59,12 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException,
             IllegalArgumentException {
-        if (users.containsKey(user.getEmail())) {
-            throw new EntityIsAlreadyExistsException("Пользователь с таким email уже существует!");
-        }
-        if (user.getEmail() != null && !user.getEmail().toLowerCase().matches(EMAIL_VALIDATION)) {
-            throw new IllegalArgumentException("Некорректный email!");
-        }
+        isValidUser(user);
         User oldUser = null;
         for (User cashedUser : users.values()) {
             if (cashedUser.getId() == id) {
@@ -92,6 +82,15 @@ public class UserRepositoryImpl implements UserRepository {
         }
         if (target != null) {
             users.remove(target.getEmail());
+        }
+    }
+
+    private void isValidUser(User user) throws EntityIsAlreadyExistsException, IllegalArgumentException {
+        if (users.containsKey(user.getEmail())) {
+            throw new EntityIsAlreadyExistsException("Пользователь с таким email уже существует!");
+        }
+        if (user.getEmail() != null && !user.getEmail().toLowerCase().matches(EMAIL_VALIDATION)) {
+            throw new IllegalArgumentException("Некорректный email!");
         }
     }
 }
