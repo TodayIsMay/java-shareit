@@ -107,7 +107,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComment(Long itemId, CommentDto comment, Long userId)
             throws NoSuchElementException, IllegalArgumentException {
-        if (comment.getText().isEmpty() | comment.getText() == null) {
+        if (comment.getText().isEmpty()) {
+            throw new IllegalArgumentException("Комментарий не должен быть пустым");
+        }
+        if (comment.getText() == null) {
             throw new IllegalArgumentException("Комментарий не должен быть пустым");
         }
 

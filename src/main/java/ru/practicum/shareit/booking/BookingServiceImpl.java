@@ -52,8 +52,11 @@ public class BookingServiceImpl implements BookingService {
         if (bookingRequest.getStart().isAfter(bookingRequest.getEnd())) {
             throw new IllegalArgumentException("Время начала бронирования должно быть раньше времени окончания!");
         }
-        if (bookingRequest.getEnd().isBefore(LocalDateTime.now()) | bookingRequest.getStart().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Время начала и/или окончания бронирования не может быть в прошлом!");
+        if (bookingRequest.getEnd().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Время окончания бронирования не может быть в прошлом!");
+        }
+        if (bookingRequest.getStart().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Время начала бронирования не может быть в прошлом!");
         }
         User user = userService.getUserById(userId);
         Status status = Status.WAITING;
