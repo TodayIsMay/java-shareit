@@ -1,18 +1,14 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * // TODO реализовать сущность для бронирования вещей.
- */
 @Data
 @RequiredArgsConstructor
 @Entity

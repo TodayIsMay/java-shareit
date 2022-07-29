@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.requests.ItemRequest;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;

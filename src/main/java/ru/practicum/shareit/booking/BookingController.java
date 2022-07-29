@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 
 import java.nio.file.AccessDeniedException;

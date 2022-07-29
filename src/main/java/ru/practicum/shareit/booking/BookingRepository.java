@@ -2,15 +2,14 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findAllByBooker(long userId);
     List<Booking> findAllByBookerAndItemIdAndStatus(User booker, long itemId, Status status);
 
     List<Booking> findAllByBookerOrderByStartDesc(User booker);
@@ -22,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerAndStatusIsOrderByStartDesc(User booker, Status status);
 
     @Query(nativeQuery = true, value = "SELECT * FROM bookings WHERE booker_id = ? " +
-    "AND start_date < now() AND item_id = ?")
+            "AND start_date < now() AND item_id = ?")
     List<Booking> findPassedBookings(Long userId, Long itemId);
 
     @Query(nativeQuery = true, value = "SELECT * FROM bookings as b " +

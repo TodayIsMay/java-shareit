@@ -1,11 +1,11 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.nio.file.AccessDeniedException;
