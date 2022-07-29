@@ -1,14 +1,16 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.exeptions.EntityIsAlreadyExistsException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -16,26 +18,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        return userRepository.getAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(long id) throws NoSuchElementException {
-        return userRepository.getUserById(id);
+        if (userRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException("Пользователь с таким id не найден!");
+        } else {
+            return userRepository.findById(id).get();
+        }
     }
 
     @Override
-    public User addUser(User user) throws EntityIsAlreadyExistsException {
-        return userRepository.addUser(user);
+    public User addUser(UserDto userDto) throws IllegalArgumentException {
+        User user = UserMapper.toUser(userDto);
+        return userRepository.save(user);
     }
 
     @Override
-    public User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException, IllegalArgumentException {
-        return userRepository.updateUser(id, user);
+    public User updateUser(long id, User user) throws NoSuchElementException, IllegalArgumentException {
+        Optional<User> oldUserOpt = userRepository.findById(id);
+        if (oldUserOpt.isEmpty()) {
+            throw new NoSuchElementException("Пользователь не найден!");
+        }
+        User oldUser = oldUserOpt.get();
+        User newUser = new User(id, user.getName() == null ? oldUser.getName() : user.getName(),
+                user.getEmail() == null ? oldUser.getEmail() : user.getEmail());
+        return userRepository.save(newUser);
     }
 
     @Override
     public void deleteUserById(long id) {
-        userRepository.deleteUserById(id);
+        userRepository.deleteById(id);
     }
 }

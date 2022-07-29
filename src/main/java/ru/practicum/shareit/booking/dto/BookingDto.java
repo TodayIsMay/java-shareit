@@ -2,8 +2,13 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * // TODO имплементировать ДТО для броней.
@@ -11,17 +16,26 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class BookingDto {
-    private LocalDate start;
-    private LocalDate end;
+    private long id;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Status status;
+    private User booker;
     private Item item;
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Item {
-        private long id;
+        private Long id;
         private String name;
+    }
 
-        public Item(long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class User {
+        private Long id;
+        private String name;
     }
 }

@@ -6,11 +6,15 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 public class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {
-        ItemDto itemDto = ItemMapper.toItemDto(booking.getItem());
         return new BookingDto(
-            booking.getStart(),
-            booking.getEnd(),
-            new BookingDto.Item(itemDto.getId(), itemDto.getName())
+                booking.getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getStatus(),
+                new BookingDto.User(booking.getBooker().getId(),
+                        booking.getBooker().getName()),
+                new BookingDto.Item(booking.getItem().getId(),
+                        booking.getItem().getName())
         );
     }
 }

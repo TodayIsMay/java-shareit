@@ -10,7 +10,7 @@ public interface UserService {
 
     User getUserById(long id) throws NoSuchElementException;
 
-    User addUser(User user) throws EntityIsAlreadyExistsException;
+    User addUser(UserDto user) throws EntityIsAlreadyExistsException;
 
     User updateUser(long id, User user) throws NoSuchElementException, EntityIsAlreadyExistsException,
             IllegalArgumentException;

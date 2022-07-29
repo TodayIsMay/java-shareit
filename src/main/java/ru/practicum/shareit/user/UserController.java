@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeptions.EntityIsAlreadyExistsException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) throws EntityIsAlreadyExistsException, IllegalArgumentException {
+    public User createUser(@Valid @RequestBody UserDto user) throws EntityIsAlreadyExistsException, IllegalArgumentException {
         return userService.addUser(user);
     }
 
@@ -59,6 +60,14 @@ public class UserController {
         return new ResponseEntity<>(
                 Map.of("message", e.getMessage()),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(final NoSuchElementException e) {
+        return new ResponseEntity<>(
+                Map.of("message", e.getMessage()),
+                HttpStatus.NOT_FOUND
         );
     }
 }
