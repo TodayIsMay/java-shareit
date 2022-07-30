@@ -107,37 +107,28 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComment(Long itemId, CommentDto comment, Long userId)
             throws NoSuchElementException, IllegalArgumentException {
-        if (comment.getText().isEmpty()) {
-            throw new IllegalArgumentException("Комментарий не должен быть пустым");
-        }
-        if (comment.getText() == null) {
-            throw new IllegalArgumentException("Комментарий не должен быть пустым");
-        }
-
-        Item item = getItemById(itemId);
-
-        User user = userService.getUserById(userId);
-        var bookings = bookingService.checkBookingsForItem(itemId, userId);
-        if (bookings.isEmpty()) {
-            throw new IllegalArgumentException("У пользователя нет ни одной брони на данную вещь");
-        }
-
-        var passedBookings = bookingRepository.findPassedBookings(userId, itemId);
-        if (passedBookings.isEmpty()) {
-            throw new IllegalArgumentException("Нельзя оставлять комментарии к будущим бронированиям!");
-        }
-
         Comment resultComment = new Comment();
+        if (isValidComment(comment)) {
+            Item item = getItemById(itemId);
 
-        resultComment.setItem(item);
-        resultComment.setAuthor(user);
-        resultComment.setText(comment.getText());
-        resultComment.setCreated(LocalDateTime.now());
-        commentRepository.save(resultComment);
-        CommentDto dto = CommentMapper.toDto(resultComment);
-        System.out.println(dto);
+            User user = userService.getUserById(userId);
+            var bookings = bookingService.checkBookingsForItem(itemId, userId);
+            if (bookings.isEmpty()) {
+                throw new IllegalArgumentException("У пользователя нет ни одной брони на данную вещь");
+            }
 
-        return dto;
+            var passedBookings = bookingRepository.findPassedBookings(userId, itemId);
+            if (passedBookings.isEmpty()) {
+                throw new IllegalArgumentException("Нельзя оставлять комментарии к будущим бронированиям!");
+            }
+
+            resultComment.setItem(item);
+            resultComment.setAuthor(user);
+            resultComment.setText(comment.getText());
+            resultComment.setCreated(LocalDateTime.now());
+            commentRepository.save(resultComment);
+        }
+        return CommentMapper.toDto(resultComment);
     }
 
     private ItemDto setLastAndNextBooking(ItemDto itemDto, Long userId) {
@@ -164,5 +155,15 @@ public class ItemServiceImpl implements ItemService {
         return items.stream()
                 .map(dto -> setLastAndNextBooking(dto, userId))
                 .collect(Collectors.toList());
+    }
+
+    private boolean isValidComment(CommentDto comment) {
+        if (comment.getText().isEmpty()) {
+            throw new IllegalArgumentException("Комментарий не должен быть пустым");
+        }
+        if (comment.getText() == null) {
+            throw new IllegalArgumentException("Комментарий не должен быть пустым");
+        }
+        return true;
     }
 }

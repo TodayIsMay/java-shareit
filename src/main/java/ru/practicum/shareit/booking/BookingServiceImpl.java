@@ -5,8 +5,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.model.User;
 
 import java.nio.file.AccessDeniedException;
 import java.rmi.AccessException;
@@ -49,46 +49,34 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking addBooking(BookingRequest bookingRequest, long userId)
             throws NoSuchElementException, ItemIsNotAvailableException, IllegalArgumentException, AccessException {
-        if (bookingRequest.getStart().isAfter(bookingRequest.getEnd())) {
-            throw new IllegalArgumentException("Время начала бронирования должно быть раньше времени окончания!");
-        }
-        if (bookingRequest.getEnd().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Время окончания бронирования не может быть в прошлом!");
-        }
-        if (bookingRequest.getStart().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Время начала бронирования не может быть в прошлом!");
-        }
-        User user = userService.getUserById(userId);
-        Status status = Status.WAITING;
-        long itemId = bookingRequest.getItemId();
-        Item item = itemRepository.findById(itemId).get();
-        if (item.getOwner().getId() == userId) {
-            throw new AccessException("Владелец вещи не может её забронировать сам у себя!");
-        }
-        if (!item.getAvailable()) {
-            throw new ItemIsNotAvailableException("Вещь уже занята!");
-        }
         Booking booking = new Booking();
-        booking.setStart(bookingRequest.getStart());
-        booking.setEnd(bookingRequest.getEnd());
-        booking.setItem(item);
-        booking.setBooker(user);
-        booking.setStatus(status);
-
+        if (isValidRequest(bookingRequest)) {
+            User user = userService.getUserById(userId);
+            Status status = Status.WAITING;
+            long itemId = bookingRequest.getItemId();
+            Item item = itemRepository.findById(itemId).get();
+            if (item.getOwner().getId() == userId) {
+                throw new AccessException("Владелец вещи не может её забронировать сам у себя!");
+            }
+            if (!item.getAvailable()) {
+                throw new ItemIsNotAvailableException("Вещь уже занята!");
+            }
+            booking.setStart(bookingRequest.getStart());
+            booking.setEnd(bookingRequest.getEnd());
+            booking.setItem(item);
+            booking.setBooker(user);
+            booking.setStatus(status);
+        }
         return bookingRepository.save(booking);
     }
 
     @Override
     public Booking setApproved(long bookingId, long userId, boolean isApproved) throws AccessDeniedException {
         Booking booking = getBookingById(bookingId, userId);
-        if (booking.getItem().getOwner().getId() != userId) {
-            throw new AccessDeniedException("Бронирование может быть подтверждено только владельцем вещи!");
+        if (isValidBooking(booking, userId)) {
+            booking.setStatus(isApproved ? Status.APPROVED : Status.REJECTED);
+            bookingRepository.save(booking);
         }
-        if (booking.getStatus() == Status.APPROVED) {
-            throw new IllegalArgumentException("Бронирование уже подтверждено!");
-        }
-        booking.setStatus(isApproved ? Status.APPROVED : Status.REJECTED);
-        bookingRepository.save(booking);
         return booking;
     }
 
@@ -125,5 +113,29 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> checkBookingsForItem(long itemId, long userId) {
         User booker = userService.getUserById(userId);
         return bookingRepository.findAllByBookerAndItemIdAndStatus(booker, itemId, Status.APPROVED);
+    }
+
+    private boolean isValidRequest(BookingRequest bookingRequest) throws IllegalArgumentException {
+        if (bookingRequest.getStart().isAfter(bookingRequest.getEnd())) {
+            throw new IllegalArgumentException("Время начала бронирования должно быть раньше времени окончания!");
+        }
+        if (bookingRequest.getEnd().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Время окончания бронирования не может быть в прошлом!");
+        }
+        if (bookingRequest.getStart().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Время начала бронирования не может быть в прошлом!");
+        }
+        return true;
+    }
+
+    private boolean isValidBooking(Booking booking, long userId)
+            throws AccessDeniedException, IllegalArgumentException {
+        if (booking.getItem().getOwner().getId() != userId) {
+            throw new AccessDeniedException("Бронирование может быть подтверждено только владельцем вещи!");
+        }
+        if (booking.getStatus() == Status.APPROVED) {
+            throw new IllegalArgumentException("Бронирование уже подтверждено!");
+        }
+        return true;
     }
 }

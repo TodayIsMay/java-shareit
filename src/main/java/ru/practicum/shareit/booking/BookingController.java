@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * // TODO имплементировать контроллер броней.
- */
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
