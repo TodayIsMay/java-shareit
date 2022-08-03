@@ -18,7 +18,8 @@ public interface BookingService {
 
     Booking setApproved(long bookingId, long userId, boolean isApproved) throws AccessDeniedException;
 
-    List<BookingDto> getAllForUser(long userId, String state) throws NoSuchElementException, BookingUnsupportedTypeException;
+    List<BookingDto> getAllForUser(long userId, String state)
+            throws NoSuchElementException, BookingUnsupportedTypeException;
 
     List<BookingDto> getBookingsByOwner(Long userId, String state) throws BookingUnsupportedTypeException;
 

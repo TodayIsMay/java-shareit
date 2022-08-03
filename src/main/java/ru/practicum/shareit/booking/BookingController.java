@@ -53,11 +53,10 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBookingsByOwner(@RequestParam(value = "state", required = false,
-            defaultValue = "ALL") String state,
-                                               @RequestHeader("X-Sharer-User-Id")
-                                                       Long userPrincipal) throws BookingUnsupportedTypeException {
-        return bookingService.getBookingsByOwner(userPrincipal, state);
+    public List<BookingDto> getBookingsByOwner(
+            @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
+            @RequestHeader("X-Sharer-User-Id") Long userId) throws BookingUnsupportedTypeException {
+        return bookingService.getBookingsByOwner(userId, state);
     }
 
     @ExceptionHandler
