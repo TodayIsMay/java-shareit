@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.exeptions.BookingUnsupportedTypeException;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 
 import java.nio.file.AccessDeniedException;
@@ -45,16 +46,17 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getAllForUSer(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                       @RequestParam(required = false, defaultValue = "ALL") State state) {
+    public List<BookingDto> getAllForUSer(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                          @RequestParam(required = false, defaultValue = "ALL") String state)
+            throws BookingUnsupportedTypeException {
         return bookingService.getAllForUser(userId, state);
     }
 
     @GetMapping("/owner")
-    public List<Booking> getBookingsByOwner(@RequestParam(value = "state", required = false,
-            defaultValue = "ALL") State state,
-                                            @RequestHeader("X-Sharer-User-Id")
-                                                    Long userPrincipal) {
+    public List<BookingDto> getBookingsByOwner(@RequestParam(value = "state", required = false,
+            defaultValue = "ALL") String state,
+                                               @RequestHeader("X-Sharer-User-Id")
+                                                       Long userPrincipal) throws BookingUnsupportedTypeException {
         return bookingService.getBookingsByOwner(userPrincipal, state);
     }
 
@@ -95,6 +97,14 @@ public class BookingController {
         return new ResponseEntity<>(
                 Map.of("message", e.getMessage()),
                 HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleAccess(final BookingUnsupportedTypeException e) {
+        return new ResponseEntity<>(
+                Map.of("error", e.getMessage()),
+                HttpStatus.BAD_REQUEST
         );
     }
 }

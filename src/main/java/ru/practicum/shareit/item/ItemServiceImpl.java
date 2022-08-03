@@ -66,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAll(long userId) throws NoSuchElementException {
         User owner = userService.getUserById(userId);
-        List<Item> itemDto = itemRepository.findAllByOwner(owner);
+        List<Item> itemDto = itemRepository.findAllByOwnerOrderById(owner);
         List<ItemDto> items = itemDto.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         return setLastAndNextBookingForList(items, userId);
     }
@@ -139,8 +139,8 @@ public class ItemServiceImpl implements ItemService {
             nextBooking = null;
             lastBooking = null;
         } else {
-            lastBooking = bookingRepository.findLastBooking(itemDto.getOwner().getId());
-            nextBooking = bookingRepository.findNextBooking(itemDto.getOwner().getId());
+            lastBooking = bookingRepository.findLastBooking(itemDto.getOwner().getId(), itemDto.getId());
+            nextBooking = bookingRepository.findNextBooking(itemDto.getOwner().getId(), itemDto.getId());
         }
 
         itemDto.setLastBooking(lastBooking == null ? null :
@@ -158,7 +158,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void isValidComment(CommentDto comment) {
-        if (StringUtils.hasText(comment.getText())) {
+        if (StringUtils.isEmpty(comment.getText())) {
             throw new IllegalArgumentException("Комментарий не должен быть пустым");
         }
     }

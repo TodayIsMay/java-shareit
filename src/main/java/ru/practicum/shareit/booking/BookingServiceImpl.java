@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.exeptions.BookingUnsupportedTypeException;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -79,32 +81,76 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllForUser(long userId, State state) throws NoSuchElementException {
+    public List<BookingDto> getAllForUser(long userId, String stringState)
+            throws NoSuchElementException, IllegalArgumentException, BookingUnsupportedTypeException {
         User booker = userService.getUserById(userId);
+
+        State state;
+
+        try {
+            state = State.valueOf(stringState);
+        } catch (IllegalArgumentException e) {
+            throw new BookingUnsupportedTypeException("Unknown state: UNSUPPORTED_STATUS");
+        }
+
         switch (state) {
             case PAST:
-                bookingRepository.findAllByBookerAndEndIsBeforeOrderByStartDesc(booker, LocalDateTime.now());
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
+                        LocalDateTime.now()));
             case FUTURE:
-                return bookingRepository.findAllByBookerAndStartIsAfterOrderByStartDesc(booker, LocalDateTime.now());
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
+                        LocalDateTime.now()));
             case WAITING:
-                return bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker, Status.WAITING);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
+                        Status.WAITING));
             case REJECTED:
-                return bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker, Status.REJECTED);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
+                        Status.REJECTED));
+            case CURRENT:
+                return BookingMapper.toBookingDtos(bookingRepository.getByCurrentStatus(booker.getId()));
             default:
-                return bookingRepository.findAllByBookerOrderByStartDesc(booker);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerOrderByStartDesc(booker));
+
         }
     }
 
     @Override
-    public List<Booking> getBookingsByOwner(Long userId, State state) {
-        User booker = userService.getUserById(userId);
+    public List<BookingDto> getBookingsByOwner(Long userId, String stringState) throws BookingUnsupportedTypeException {
+        User owner = userService.getUserById(userId);
 
-        List<Booking> bookings = bookingRepository.findForOwner(booker.getId());
+        State state;
+
+        try {
+            state = State.valueOf(stringState);
+        } catch (IllegalArgumentException e) {
+            throw new BookingUnsupportedTypeException("Unknown state: UNSUPPORTED_STATUS");
+        }
+
+        List<Booking> bookings = bookingRepository.findForOwner(owner.getId());
 
         if (bookings.isEmpty()) {
             throw new NoSuchElementException("У пользователя с таким ID нет ни одной брони.");
         }
-        return bookings;
+
+        switch (state) {
+            case PAST:
+                bookings = bookingRepository.findForOwnerPast(owner.getId());
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findForOwnerFuture(owner.getId());
+                break;
+            case WAITING:
+                bookings = bookingRepository.findForOwnerByStatus(owner.getId(), Status.WAITING.toString());
+                break;
+            case REJECTED:
+                bookings = bookingRepository.findForOwnerByStatus(owner.getId(), Status.REJECTED.toString());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findForOwnerCurrent(owner.getId());
+                break;
+        }
+
+        return BookingMapper.toBookingDtos(bookings);
     }
 
     @Override

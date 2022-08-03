@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.exeptions.BookingUnsupportedTypeException;
 import ru.practicum.shareit.exeptions.ItemIsNotAvailableException;
 
 import java.nio.file.AccessDeniedException;
@@ -16,9 +18,9 @@ public interface BookingService {
 
     Booking setApproved(long bookingId, long userId, boolean isApproved) throws AccessDeniedException;
 
-    List<Booking> getAllForUser(long userId, State state) throws NoSuchElementException;
+    List<BookingDto> getAllForUser(long userId, String state) throws NoSuchElementException, BookingUnsupportedTypeException;
 
-    List<Booking> getBookingsByOwner(Long userId, State state);
+    List<BookingDto> getBookingsByOwner(Long userId, String state) throws BookingUnsupportedTypeException;
 
     List<Booking> checkBookingsForItem(long itemId, long userId);
 }
