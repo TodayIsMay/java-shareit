@@ -57,8 +57,8 @@ public class BookingServiceTest {
 
         BookingDto bookingDto = bookingService.addBooking(
                 new BookingRequest(
-                        LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
+                        LocalDateTime.now().plusDays(2),
                         itemDto.getId()
                 ),
                 userBooker.getId()
