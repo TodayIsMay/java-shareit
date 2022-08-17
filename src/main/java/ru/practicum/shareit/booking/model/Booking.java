@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.booking.Status;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "bookings")
 public class Booking {

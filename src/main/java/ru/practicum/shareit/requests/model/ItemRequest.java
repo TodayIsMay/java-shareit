@@ -1,10 +1,16 @@
 package ru.practicum.shareit.requests.model;
 
 import lombok.Data;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.Response;
+import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,8 +25,12 @@ public class ItemRequest {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User requestor;
+    @JoinColumn(name = "requester_id")
+    private User requester;
 
     @Column(name = "created")
-    private LocalDate created;
+    private LocalDateTime created;
+
+    @OneToMany(mappedBy = "request")
+    private List<Item> items = new ArrayList<>();
 }

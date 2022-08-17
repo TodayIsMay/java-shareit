@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking addBooking(BookingRequest bookingRequest, long userId)
+    public BookingDto addBooking(BookingRequest bookingRequest, long userId)
             throws NoSuchElementException, ItemIsNotAvailableException, IllegalArgumentException, AccessException {
         Booking booking = new Booking();
         isValidRequest(bookingRequest);
@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setItem(item);
         booking.setBooker(user);
         booking.setStatus(status);
-        return bookingRepository.save(booking);
+        return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllForUser(long userId, String stringState)
+    public List<BookingDto> getAllForUser(long userId, String stringState, Integer from, Integer size)
             throws NoSuchElementException, IllegalArgumentException, BookingUnsupportedTypeException {
         User booker = userService.getUserById(userId);
 
@@ -95,22 +95,45 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case PAST:
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
-                        LocalDateTime.now()));
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
+                            LocalDateTime.now()));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerPastWithBorders(userId, from, size));
             case FUTURE:
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
-                        LocalDateTime.now()));
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
+                            LocalDateTime.now()));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerFutureWithBorders(userId, from, size));
             case WAITING:
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
-                        Status.WAITING));
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
+                            Status.WAITING));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusWithBorders(userId, Status.WAITING, from, size));
             case REJECTED:
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
-                        Status.REJECTED));
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
+                            Status.REJECTED));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusWithBorders(userId, Status.REJECTED, from, size));
             case CURRENT:
-                return BookingMapper.toBookingDtos(bookingRepository.getByCurrentStatus(booker.getId()));
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.getByCurrentStatus(booker.getId()));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerCurrentWithBorders(userId, from, size));
             default:
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerOrderByStartDesc(booker));
-
+                if (from == null | size == null) {
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerOrderByStartDesc(booker));
+                }
+                isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerWithBorders(userId, from, size));
         }
     }
 
@@ -178,6 +201,15 @@ public class BookingServiceImpl implements BookingService {
         }
         if (booking.getStatus() == Status.APPROVED) {
             throw new IllegalArgumentException("Бронирование уже подтверждено!");
+        }
+    }
+
+    private void isValidBorders(Integer from, Integer size) {
+        if (from < 0) {
+            throw new IllegalArgumentException("Точка начала не может быть отрицательным числом!");
+        }
+        if (size <= 0) {
+            throw new IllegalArgumentException("Количество элементов должно быть больше 0!");
         }
     }
 }

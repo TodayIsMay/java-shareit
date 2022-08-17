@@ -23,8 +23,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId) throws NoSuchElementException {
-        return itemService.getAll(userId);
+    public List<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                @RequestParam(required = false) Integer from,
+                                @RequestParam(required = false) Integer size) throws NoSuchElementException {
+        return itemService.getAll(userId, from, size);
     }
 
     @GetMapping("/{itemId}")
@@ -34,7 +36,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public Item addItem(@Valid @RequestBody ItemDto item, @RequestHeader(value = "X-Sharer-User-Id") long userId)
+    public ItemDto addItem(@Valid @RequestBody ItemDto item, @RequestHeader(value = "X-Sharer-User-Id") long userId)
             throws NoSuchElementException, IllegalArgumentException {
         return itemService.addItem(item, userId);
     }
@@ -46,8 +48,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchByWord(@RequestParam String text) {
-        return itemService.search(text);
+    public List<ItemDto> searchByWord(@RequestParam String text, @RequestParam(required = false) Integer from,
+                                      @RequestParam(required = false) Integer size) throws IllegalArgumentException {
+        return itemService.search(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

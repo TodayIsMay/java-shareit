@@ -9,13 +9,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public interface ItemService {
-    List<ItemDto> search(String text);
+    List<ItemDto> search(String text, Integer from, Integer size) throws IllegalArgumentException;
 
     ItemDto get(long itemId, long userId) throws NoSuchElementException;
 
-    List<ItemDto> getAll(long userId) throws NoSuchElementException;
+    List<ItemDto> getAll(long userId, Integer from, Integer size)
+            throws NoSuchElementException, IllegalArgumentException;
 
-    Item addItem(ItemDto item, long userId) throws NoSuchElementException, IllegalArgumentException;
+    ItemDto addItem(ItemDto item, long userId) throws NoSuchElementException, IllegalArgumentException;
 
     Item editItem(long itemId, long userId, ItemDto item) throws AccessDeniedException;
 
