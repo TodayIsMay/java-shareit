@@ -1,10 +1,7 @@
 package ru.practicum.shareit.requests.model;
 
 import lombok.Data;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.Response;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;

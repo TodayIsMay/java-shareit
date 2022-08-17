@@ -9,8 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,12 +17,12 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -70,16 +68,16 @@ public class BookingControllerTest {
                         1L,
                         "item name"
                 )
-                );
+        );
         Item item = new Item(1L, "item", "item description", true, new User(1L, "Alex", "email@mail.ru"), null, null);
         User booker = new User(2L, "booker", "booker@yandex.ru");
         booking = new Booking
                 (1L,
-                null,
-                null,
-                item,
-                booker,
-                Status.APPROVED);
+                        null,
+                        null,
+                        item,
+                        booker,
+                        Status.APPROVED);
 
         result.add(bookingDto);
     }

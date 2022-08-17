@@ -3,8 +3,6 @@ package ru.practicum.shareit.requests.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.Response;
 
 import java.time.LocalDateTime;
 import java.util.List;

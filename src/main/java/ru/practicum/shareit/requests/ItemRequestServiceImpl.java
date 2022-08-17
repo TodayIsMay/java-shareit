@@ -2,9 +2,7 @@ package ru.practicum.shareit.requests;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
