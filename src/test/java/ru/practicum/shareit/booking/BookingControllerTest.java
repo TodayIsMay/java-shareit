@@ -69,15 +69,24 @@ public class BookingControllerTest {
                         "item name"
                 )
         );
-        Item item = new Item(1L, "item", "item description", true, new User(1L, "Alex", "email@mail.ru"), null, null);
+        Item item = new Item(
+                1L,
+                "item",
+                "item description",
+                true,
+                new User(1L, "Alex", "email@mail.ru"),
+                null,
+                null);
+
         User booker = new User(2L, "booker", "booker@yandex.ru");
-        booking = new Booking
-                (1L,
-                        null,
-                        null,
-                        item,
-                        booker,
-                        Status.APPROVED);
+
+        booking = new Booking(
+                1L,
+                null,
+                null,
+                item,
+                booker,
+                Status.APPROVED);
 
         result.add(bookingDto);
     }
