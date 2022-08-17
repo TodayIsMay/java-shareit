@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exeptions.BookingUnsupportedTypeException;
@@ -38,6 +39,7 @@ public class BookingServiceTest {
     private UserService userService;
 
     @Test
+    @Rollback
     void getOwnerBookings() throws EntityIsAlreadyExistsException, AccessException, ItemIsNotAvailableException, BookingUnsupportedTypeException {
         User userOwnerOfItem = userService.addUser(new UserDto("name", "email@mail.ru"));
         User userBooker = userService.addUser(new UserDto("booker", "booker@mail.com"));
@@ -56,7 +58,7 @@ public class BookingServiceTest {
         BookingDto bookingDto = bookingService.addBooking(
                 new BookingRequest(
                         LocalDateTime.now(),
-                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
                         itemDto.getId()
                 ),
                 userBooker.getId()
