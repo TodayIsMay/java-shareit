@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.Validation;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -85,7 +86,7 @@ public class ItemServiceImpl implements ItemService {
             itemDtos = items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
             return setLastAndNextBookingForList(itemDtos, userId);
         }
-        isValidBorders(from, size);
+        Validation.isValidBorders(from, size);
         items = itemRepository.findAllByUserWithBorders(userId, from, size);
         itemDtos = items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         return setLastAndNextBookingForList(itemDtos, userId);
@@ -184,15 +185,6 @@ public class ItemServiceImpl implements ItemService {
     private void isValidComment(CommentDto comment) {
         if (StringUtils.isEmpty(comment.getText())) {
             throw new IllegalArgumentException("Комментарий не должен быть пустым");
-        }
-    }
-
-    private void isValidBorders(int from, int size) {
-        if (from < 0) {
-            throw new IllegalArgumentException("Точка начала не может быть отрицательным числом!");
-        }
-        if (size <= 0) {
-            throw new IllegalArgumentException("Количество элементов должно быть больше 0!");
         }
     }
 }

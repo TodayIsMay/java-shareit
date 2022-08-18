@@ -40,7 +40,8 @@ public class BookingServiceTest {
 
     @Test
     @Rollback
-    void getOwnerBookings() throws EntityIsAlreadyExistsException, AccessException, ItemIsNotAvailableException, BookingUnsupportedTypeException {
+    void getOwnerBookings() throws EntityIsAlreadyExistsException, AccessException, ItemIsNotAvailableException,
+            BookingUnsupportedTypeException {
         User userOwnerOfItem = userService.addUser(new UserDto("name", "email@mail.ru"));
         User userBooker = userService.addUser(new UserDto("booker", "booker@mail.com"));
 

@@ -36,7 +36,8 @@ public class ItemRequestServiceTest {
         User observer = userService.addUser(new UserDto("another", "another@mail.ru"));
 
 
-        ItemRequestDto itemRequestDto = itemRequestService.postRequest(new ItemRequestDto(1L, "description", null, new ArrayList<>()), user.getId());
+        ItemRequestDto itemRequestDto = itemRequestService.postRequest(
+                new ItemRequestDto(1L, "description", null, new ArrayList<>()), user.getId());
 
 
         List<ItemRequestDto> requests = itemRequestService.getOthersRequests(observer.getId(), 0, 5);

@@ -8,6 +8,7 @@ import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.Validation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,11 +52,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getOthersRequests(long requesterId, Integer from, Integer size) throws NoSuchElementException {
+    public List<ItemRequestDto> getOthersRequests(long requesterId, Integer from, Integer size)
+            throws NoSuchElementException {
         if (from == null | size == null) {
-            return ItemRequestMapper.toItemRequestDtos(itemRequestRepository.findOthersRequestsWithoutBorders(requesterId));
+            return ItemRequestMapper.toItemRequestDtos(itemRequestRepository
+                    .findOthersRequestsWithoutBorders(requesterId));
         }
-        isValidBorders(from, size);
+        Validation.isValidBorders(from, size);
         userService.getUserById(requesterId);
         List<ItemRequest> requests = itemRequestRepository.findOthersRequests(from, size);
         return ItemRequestMapper.toItemRequestDtos(requests);
@@ -91,15 +94,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private void isValidRequest(ItemRequestDto itemRequestDto) throws IllegalArgumentException {
         if ((StringUtils.isEmpty(itemRequestDto.getDescription()))) {
             throw new IllegalArgumentException("Описание не может быть пустым!");
-        }
-    }
-
-    private void isValidBorders(int from, int size) {
-        if (from < 0) {
-            throw new IllegalArgumentException("Точка начала не может быть отрицательным числом!");
-        }
-        if (size <= 0) {
-            throw new IllegalArgumentException("Количество элементов должно быть больше 0!");
         }
     }
 }

@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.Validation;
 
 import java.nio.file.AccessDeniedException;
 import java.rmi.AccessException;
@@ -96,43 +97,51 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case PAST:
                 if (from == null | size == null) {
-                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
+                    return BookingMapper.toBookingDtos(bookingRepository
+                            .findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
                             LocalDateTime.now()));
                 }
-                isValidBorders(from, size);
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerPastWithBorders(userId, from, size));
+                Validation.isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository
+                        .findAllByBookerPastWithBorders(userId, from, size));
             case FUTURE:
                 if (from == null | size == null) {
-                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
+                    return BookingMapper.toBookingDtos(bookingRepository
+                            .findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
                             LocalDateTime.now()));
                 }
-                isValidBorders(from, size);
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerFutureWithBorders(userId, from, size));
+                Validation.isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository
+                        .findAllByBookerFutureWithBorders(userId, from, size));
             case WAITING:
                 if (from == null | size == null) {
-                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
+                    return BookingMapper.toBookingDtos(bookingRepository
+                            .findAllByBookerAndStatusIsOrderByStartDesc(booker,
                             Status.WAITING));
                 }
-                isValidBorders(from, size);
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusWithBorders(userId, Status.WAITING, from, size));
+                Validation.isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository
+                        .findAllByBookerAndStatusWithBorders(userId, Status.WAITING, from, size));
             case REJECTED:
                 if (from == null | size == null) {
-                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(booker,
-                            Status.REJECTED));
+                    return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(
+                            booker, Status.REJECTED));
                 }
-                isValidBorders(from, size);
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusWithBorders(userId, Status.REJECTED, from, size));
+                Validation.isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository
+                        .findAllByBookerAndStatusWithBorders(userId, Status.REJECTED, from, size));
             case CURRENT:
                 if (from == null | size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository.getByCurrentStatus(booker.getId()));
                 }
-                isValidBorders(from, size);
-                return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerCurrentWithBorders(userId, from, size));
+                Validation.isValidBorders(from, size);
+                return BookingMapper.toBookingDtos(bookingRepository
+                        .findAllByBookerCurrentWithBorders(userId, from, size));
             default:
                 if (from == null | size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerOrderByStartDesc(booker));
                 }
-                isValidBorders(from, size);
+                Validation.isValidBorders(from, size);
                 return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerWithBorders(userId, from, size));
         }
     }
@@ -201,15 +210,6 @@ public class BookingServiceImpl implements BookingService {
         }
         if (booking.getStatus() == Status.APPROVED) {
             throw new IllegalArgumentException("Бронирование уже подтверждено!");
-        }
-    }
-
-    private void isValidBorders(Integer from, Integer size) {
-        if (from < 0) {
-            throw new IllegalArgumentException("Точка начала не может быть отрицательным числом!");
-        }
-        if (size <= 0) {
-            throw new IllegalArgumentException("Количество элементов должно быть больше 0!");
         }
     }
 }

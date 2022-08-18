@@ -74,7 +74,8 @@ public class ItemRequestRepositoryTest {
     @Order(2)
     @Rollback(value = false)
     void getByRequester() {
-        List<ItemRequest> requests = repository.findAllByRequesterIdOrderByCreatedDesc(userRepository.findById(1L).get().getId());
+        List<ItemRequest> requests = repository.findAllByRequesterIdOrderByCreatedDesc(
+                userRepository.findById(1L).get().getId());
 
         Assertions.assertEquals(1, requests.size());
         Assertions.assertEquals(1L, requests.get(0).getId());
