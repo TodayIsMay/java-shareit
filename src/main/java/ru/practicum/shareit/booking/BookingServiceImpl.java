@@ -96,7 +96,7 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case PAST:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository
                             .findAllByBookerAndEndIsBeforeOrderByStartDesc(booker,
                             LocalDateTime.now()));
@@ -105,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
                 return BookingMapper.toBookingDtos(bookingRepository
                         .findAllByBookerPastWithBorders(userId, from, size));
             case FUTURE:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository
                             .findAllByBookerAndStartIsAfterOrderByStartDesc(booker,
                             LocalDateTime.now()));
@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
                 return BookingMapper.toBookingDtos(bookingRepository
                         .findAllByBookerFutureWithBorders(userId, from, size));
             case WAITING:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository
                             .findAllByBookerAndStatusIsOrderByStartDesc(booker,
                             Status.WAITING));
@@ -123,7 +123,7 @@ public class BookingServiceImpl implements BookingService {
                 return BookingMapper.toBookingDtos(bookingRepository
                         .findAllByBookerAndStatusWithBorders(userId, Status.WAITING, from, size));
             case REJECTED:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerAndStatusIsOrderByStartDesc(
                             booker, Status.REJECTED));
                 }
@@ -131,14 +131,14 @@ public class BookingServiceImpl implements BookingService {
                 return BookingMapper.toBookingDtos(bookingRepository
                         .findAllByBookerAndStatusWithBorders(userId, Status.REJECTED, from, size));
             case CURRENT:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository.getByCurrentStatus(booker.getId()));
                 }
                 Validation.isValidBorders(from, size);
                 return BookingMapper.toBookingDtos(bookingRepository
                         .findAllByBookerCurrentWithBorders(userId, from, size));
             default:
-                if (from == null | size == null) {
+                if (from == null || size == null) {
                     return BookingMapper.toBookingDtos(bookingRepository.findAllByBookerOrderByStartDesc(booker));
                 }
                 Validation.isValidBorders(from, size);
