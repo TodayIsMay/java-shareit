@@ -13,13 +13,13 @@ import java.util.NoSuchElementException;
 public interface BookingService {
     Booking getBookingById(long bookingId, long userId) throws AccessDeniedException;
 
-    Booking addBooking(BookingRequest bookingRequest, long userId)
+    BookingDto addBooking(BookingRequest bookingRequest, long userId)
             throws NoSuchElementException, ItemIsNotAvailableException, IllegalArgumentException, AccessException;
 
     Booking setApproved(long bookingId, long userId, boolean isApproved) throws AccessDeniedException;
 
-    List<BookingDto> getAllForUser(long userId, String state)
-            throws NoSuchElementException, BookingUnsupportedTypeException;
+    List<BookingDto> getAllForUser(long userId, String state, Integer from, Integer size)
+            throws NoSuchElementException, BookingUnsupportedTypeException, IllegalArgumentException;
 
     List<BookingDto> getBookingsByOwner(Long userId, String state) throws BookingUnsupportedTypeException;
 

@@ -24,7 +24,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking addBooking(@RequestBody BookingRequest bookingRequest,
+    public BookingDto addBooking(@RequestBody BookingRequest bookingRequest,
                               @RequestHeader(value = "X-Sharer-User-Id") long userId)
             throws ItemIsNotAvailableException, NoSuchElementException, IllegalArgumentException, AccessException {
         return bookingService.addBooking(bookingRequest, userId);
@@ -47,9 +47,11 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllForUSer(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                          @RequestParam(required = false, defaultValue = "ALL") String state)
-            throws BookingUnsupportedTypeException {
-        return bookingService.getAllForUser(userId, state);
+                                          @RequestParam(required = false, defaultValue = "ALL") String state,
+                                          @RequestParam(required = false) Integer from,
+                                          @RequestParam(required = false) Integer size)
+            throws BookingUnsupportedTypeException, IllegalArgumentException {
+        return bookingService.getAllForUser(userId, state, from, size);
     }
 
     @GetMapping("/owner")

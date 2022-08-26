@@ -9,8 +9,10 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.Validation;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -27,18 +29,21 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final BookingService bookingService;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     public ItemServiceImpl(ItemRepository itemRepository, UserService userService, BookingRepository bookingRepository,
-                           BookingService bookingService, CommentRepository commentRepository) {
+                           BookingService bookingService, CommentRepository commentRepository,
+                           ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
         this.bookingService = bookingService;
         this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, Integer from, Integer size) {
         if (text == null || text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
@@ -54,7 +59,14 @@ public class ItemServiceImpl implements ItemService {
                 }
             }
         }
-        return result;
+        if (from == null | size == null) {
+            return result;
+        }
+        List<ItemDto> borderedList = new ArrayList<>();
+        for (int i = from; i <= size; i++) {
+            borderedList.add(result.get(i));
+        }
+        return borderedList;
     }
 
     @Override
@@ -64,22 +76,35 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAll(long userId) throws NoSuchElementException {
+    public List<ItemDto> getAll(long userId, Integer from, Integer size)
+            throws NoSuchElementException, IllegalArgumentException {
+        List<Item> items;
+        List<ItemDto> itemDtos;
         User owner = userService.getUserById(userId);
-        List<Item> itemDto = itemRepository.findAllByOwnerOrderById(owner);
-        List<ItemDto> items = itemDto.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-        return setLastAndNextBookingForList(items, userId);
+        if (from == null | size == null) {
+            items = itemRepository.findAllByOwnerOrderById(owner);
+            itemDtos = items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+            return setLastAndNextBookingForList(itemDtos, userId);
+        }
+        Validation.isValidBorders(from, size);
+        items = itemRepository.findAllByUserWithBorders(userId, from, size);
+        itemDtos = items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return setLastAndNextBookingForList(itemDtos, userId);
     }
 
     @Override
-    public Item addItem(ItemDto itemDto, long userId) throws NoSuchElementException, IllegalArgumentException {
+    public ItemDto addItem(ItemDto itemDto, long userId) throws NoSuchElementException, IllegalArgumentException {
         User owner = userService.getUserById(userId);
         Item item = new Item();
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setOwner(owner);
         item.setAvailable(true);
-        return itemRepository.save(item);
+        if (itemDto.getRequestId() != 0) {
+            itemRequestService.addResponse(item, itemDto.getRequestId());
+            item.setRequest(itemRequestService.getItemRequestById(itemDto.getRequestId()));
+        }
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override

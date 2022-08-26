@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,8 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    @Nullable
+    private long requestId;
     private Booking lastBooking;
     private Booking nextBooking;
     private List<Comment> comments;
