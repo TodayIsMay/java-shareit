@@ -48,7 +48,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchByWord(@RequestParam String text, @RequestParam(required = false) Integer from,
+    public List<ItemDto> searchByWord(@RequestParam(value = "text", required = false) String text,
+                                      @RequestParam(required = false) Integer from,
                                       @RequestParam(required = false) Integer size) throws IllegalArgumentException {
         return itemService.search(text, from, size);
     }
