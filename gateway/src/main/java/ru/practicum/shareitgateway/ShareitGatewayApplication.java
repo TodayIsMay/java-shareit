@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ShareitGatewayApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShareitGatewayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShareitGatewayApplication.class, args);
+    }
 
 }
